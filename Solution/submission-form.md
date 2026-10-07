@@ -1,6 +1,6 @@
 # Submission form: Task 2, Kestrel Home service-request routing (Variant B)
 
-> Fields marked **[FILL IN]** need your own input before submitting: hours, links, and your own account of AI use.
+
 
 ---
 
