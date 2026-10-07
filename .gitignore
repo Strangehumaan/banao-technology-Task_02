@@ -1,0 +1,28 @@
+# --- Client data: never commit (ops-policy §10) ---
+Data/
+data/
+PS_T2.pdf
+*.pdf
+
+# --- Trained model: holds vocabulary learned from customer messages; rebuild with
+#     `uv run --directory Solution python -m kestrel_router.train` ---
+Solution/artifacts/
+*.joblib
+
+# --- Exploratory / throwaway work ---
+_scratch/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+.env
+
+# --- Editors / OS / local tooling ---
+.idea/
+.vscode/
+.claude/
+.DS_Store
+Thumbs.db

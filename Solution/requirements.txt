@@ -1,0 +1,16 @@
+# pip fallback for people not using uv (uv users: `uv sync` at the repo root uses uv.lock).
+# Service + training only. Add the last block to re-run the notebooks and tests.
+pandas>=3.0
+numpy>=2.0
+scikit-learn>=1.9
+joblib>=1.4
+fastapi>=0.115
+uvicorn[standard]>=0.30
+matplotlib>=3.9
+lightgbm>=4.5
+# notebooks / tests
+nbformat
+nbconvert
+ipykernel
+pytest
+httpx

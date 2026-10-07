@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel Request Router</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #ffffff; --ink: #1a1a19; --ink-2: #52514e; --line: #e2e1dc;
+    --accent: #2a78d6; --accent-soft: #e6effa; --warn: #a35a00; --warn-soft: #fdf1df;
+    --ok: #13795b; --ok-soft: #e3f4ec; --bar: #2a78d6; --bar-bg: #ebeae6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141413; --card: #1e1e1d; --ink: #f2f1ed; --ink-2: #b7b6ae; --line: #33332f;
+      --accent: #5598e7; --accent-soft: #1d2b3d; --warn: #f0b45c; --warn-soft: #3a2c16;
+      --ok: #4fc49a; --ok-soft: #173229; --bar: #5598e7; --bar-bg: #2b2b28;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--ink-2); margin: 0 0 20px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+  label { display: block; font-size: 13px; color: var(--ink-2); margin: 12px 0 4px; }
+  textarea, select { width: 100%; font: inherit; color: var(--ink); background: var(--bg);
+                     border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  textarea { min-height: 92px; resize: vertical; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  @media (max-width: 480px) { .row3 { grid-template-columns: 1fr; } }
+  button { font: inherit; cursor: pointer; border-radius: 8px; }
+  .primary { margin-top: 14px; width: 100%; padding: 10px; border: 0; background: var(--accent); color: #fff; font-weight: 600; }
+  .primary:disabled { opacity: .6; cursor: wait; }
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .examples button { border: 1px solid var(--line); background: transparent; color: var(--ink-2); padding: 4px 10px; font-size: 13px; }
+  .examples button:hover { border-color: var(--accent); color: var(--accent); }
+  .muted { color: var(--ink-2); font-size: 13px; }
+  .team { font-size: 26px; font-weight: 700; margin: 2px 0 6px; }
+  .banner { border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 14px; }
+  .banner.route { background: var(--ok-soft); color: var(--ok); }
+  .banner.clarify { background: var(--warn-soft); color: var(--warn); }
+  .banner.error { background: var(--warn-soft); color: var(--warn); }
+  .banner b { display: block; margin-bottom: 2px; }
+  ul.reasons { margin: 6px 0 0; padding-left: 18px; }
+  ul.reasons li { margin: 3px 0; }
+  .bars { margin-top: 10px; }
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 44px; gap: 8px; align-items: center; font-size: 13px; margin: 3px 0; }
+  .bar-track { background: var(--bar-bg); border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar-fill { background: var(--bar); height: 100%; border-radius: 4px; }
+  .num { text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-2); margin: 16px 0 4px; }
+  footer { margin-top: 18px; color: var(--ink-2); font-size: 12px; }
+  #status { font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kestrel request router</h1>
+  <p class="sub">Paste a customer's opening message. The router says which team should take it, how sure it is,
+    and why. When it can't tell, it says so.</p>
+
+  <div class="grid">
+    <section class="card" aria-label="Request">
+      <label for="text">Customer message</label>
+      <textarea id="text" placeholder="e.g. water purifier leaking water from bottom"></textarea>
+      <div class="row3">
+        <div><label for="channel">Channel</label>
+          <select id="channel"><option>chat</option><option>whatsapp</option><option>ivr</option><option>email</option></select></div>
+        <div><label for="product">Product</label>
+          <select id="product">
+            <option>Water Purifier</option><option>Air Fryer</option><option>Mixer Grinder</option>
+            <option>Induction Cooktop</option><option>Room Heater</option><option>Ceiling Fan</option><option>Robot Vacuum</option>
+          </select></div>
+        <div><label for="warranty">Warranty</label>
+          <select id="warranty"><option value="in_warranty">in warranty</option><option value="shield">Kestrel Shield</option><option value="out_of_warranty">out of warranty</option></select></div>
+      </div>
+      <button class="primary" id="go">Route this request</button>
+      <div class="examples" aria-label="Examples">
+        <span class="muted" style="width:100%">Try an example:</span>
+        <button data-t="installer did not turn up for room heater, paid on upi pls call back" data-p="Room Heater">"I paid" but not billing</button>
+        <button data-t="water purifier leaking water from bottom purifier not working" data-p="Water Purifier">purifier fault</button>
+        <button data-t="is room heater covered under shield plan, motor of room heater burnt smell" data-p="Room Heater">two requests</button>
+        <button data-t="please call back regarding water purifier asap" data-p="Water Purifier">vague</button>
+        <button data-t="charged twice for my air fryer order" data-p="Air Fryer">double charge</button>
+      </div>
+      <p id="status" class="muted"></p>
+    </section>
+
+    <section class="card" aria-live="polite" id="result">
+      <p class="muted">The result appears here.</p>
+    </section>
+  </div>
+
+  <footer>Runs locally, no paid AI calls. Model trained on Apr 2025 to Jun 2026 requests, scored against the team that
+    actually closed each request (not the old bot's guess).</footer>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+fetch("/health").then(r => r.json()).then(h => {
+  $("status").textContent = h.model_loaded
+    ? `Model loaded · validated at ${(h.holdout_accuracy * 100).toFixed(1)}% on Apr to Jun 2026`
+    : "Model not loaded: " + (h.error || "unknown error");
+}).catch(() => { $("status").textContent = "Service not reachable."; });
+
+document.querySelectorAll(".examples button").forEach(b => b.addEventListener("click", () => {
+  $("text").value = b.dataset.t; $("product").value = b.dataset.p; route();
+}));
+$("go").addEventListener("click", route);
+$("text").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) route(); });
+
+async function route() {
+  const text = $("text").value.trim();
+  if (text.length < 3) { show(`<div class="banner error"><b>Please type the customer's message.</b></div>`); return; }
+  $("go").disabled = true;
+  try {
+    const r = await fetch("/route", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ request_text: text, channel: $("channel").value,
+                             product_family: $("product").value, warranty_status: $("warranty").value }),
+    });
+    const d = await r.json();
+    if (!r.ok) {
+      const msg = d.error || (d.detail && d.detail[0] && d.detail[0].msg) || "Something went wrong.";
+      show(`<div class="banner error"><b>${esc(msg)}</b>${esc(d.what_to_do || "")}</div>`); return;
+    }
+    render(d);
+  } catch (e) {
+    show(`<div class="banner error"><b>Could not reach the router.</b>Check the service is running, then try again.</div>`);
+  } finally { $("go").disabled = false; }
+}
+
+function show(html) { $("result").innerHTML = html; }
+
+function render(d) {
+  const pct = (x) => (x * 100).toFixed(0) + "%";
+  const banner = d.action === "route"
+    ? `<div class="banner route"><b>Send to ${esc(d.team)}</b>Confident enough to route directly.</div>`
+    : `<div class="banner clarify"><b>Low confidence: check before routing</b>Best guess is ${esc(d.team)}, but only ${pct(d.confidence)} sure,
+         usually because the message doesn't say what the problem is.<br><span class="muted">If it's unclear, you could ask: “${esc(d.clarifying_question)}”</span></div>`;
+  const bars = Object.entries(d.all_teams).map(([t, p]) =>
+    `<div class="bar-row"><span>${esc(t)}</span><div class="bar-track"><div class="bar-fill" style="width:${(p * 100).toFixed(1)}%"></div></div><span class="num">${pct(p)}</span></div>`).join("");
+  show(`
+    <div class="muted">Route to</div>
+    <div class="team">${esc(d.team)}</div>
+    <div class="muted">Confidence ${pct(d.confidence)} · runner-up ${esc(d.runner_up.team)} (${pct(d.runner_up.confidence)})</div>
+    ${banner}
+    <h2>Why</h2>
+    <ul class="reasons">${d.reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
+    <h2>All teams</h2>
+    <div class="bars">${bars}</div>`);
+}
+</script>
+</body>
+</html>
