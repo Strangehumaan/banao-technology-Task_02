@@ -119,7 +119,6 @@ Yes, three times, all at the start, before any modelling.
 
 ### What did you use AI for? Which tools and models, where they helped, where they wasted your time, what you threw away. Link your three-minute screen recording here.
 
-**[FILL IN / EDIT: this is a draft of what happened in the build session]**
 
 **Tool:** Claude Code (Claude Opus 5.5) in the Claude desktop app, as a pair programmer. No AI is used inside the product.
 
@@ -139,7 +138,7 @@ Yes, three times, all at the start, before any modelling.
 - An LLM router, considered and rejected.
 - A plain whole-string mojibake fix.
 
-**Cost:** **[FILL IN]** your Claude subscription / usage. No API keys were used, and the product makes no paid calls.
+**Cost:** 2000
 
 **Screen recording:** https://drive.google.com/file/d/1vf454VWkMNBpAhLs89IYPS3E9iMe7FBb/view?usp=sharing
 
