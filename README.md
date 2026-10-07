@@ -80,7 +80,6 @@ Other endpoints:
 | Path | What |
 |---|---|
 | `predictions.csv` | Deliverable 1: one team per test `request_id` |
-| `notebooks/eda_simple.ipynb` | The short version: 9 charts covering what I tried, what I changed, and what I threw away (used in the screen recording) |
 | `notebooks/01_eda.ipynb` | What's in the data, what's wrong with it, and the decisions that follow |
 | `notebooks/02_modeling.ipynb` | Model comparison, B/C experiments, error analysis, score forecast, rupees (deliverable 3) |
 | `EVIDENCE.md` | Short written summary of the evidence: how well it works and how often it doesn't |
